@@ -16,12 +16,16 @@ import java.util.Map;
  */
 @Controller
 public class BitbucketController {
+    private static final String GITHUB="";
+    private static final String BITBUCKET="";
+    private static final String GITLAB="";
+
     @Autowired
     private JenkinsService jenkinsService;
 
-    @RequestMapping("pocket_hook")
+    @RequestMapping("bitbucket_hook")
     @ResponseBody
-    public String pocket_hook(String rq, BindingResult bindingResult) {
+    public String bitbucket_hook(String rq, BindingResult bindingResult) {
 
         Map<String, Object> map = new HashMap<String, Object>();
 
@@ -29,7 +33,20 @@ public class BitbucketController {
             map.put("errorCode", "000001");
             map.put("errorMsg", bindingResult.getFieldError().getDefaultMessage());
         }
-        jenkinsService.triggerBuild(rq);
+        jenkinsService.triggerBuildByBitbucket(rq);
+        return "success";
+    }
+    @RequestMapping("github_hook")
+    @ResponseBody
+    public String github_hook(String rq, BindingResult bindingResult) {
+
+        Map<String, Object> map = new HashMap<String, Object>();
+
+        if (bindingResult.hasErrors()) {
+            map.put("errorCode", "000001");
+            map.put("errorMsg", bindingResult.getFieldError().getDefaultMessage());
+        }
+        jenkinsService.triggerBuildByGithub(rq);
         return "success";
     }
 }
