@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuration
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="logback.xsd" debug="false" scan="true" scanPeriod="3 seconds">
+	<property name="log.dir" value="./logs"></property>
+    <!-- 控制台 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss} %-5level [%4X{uId}] [%thread] %logger - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <!-- plan操作 appender  -->
+    <appender name="TOURIST_API" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 按天回滚 daily -->
+            <fileNamePattern>${log.dir}/pocket-quartz-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- 日志最大的历史 30天 -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+	<logger name="org.apache.commons" level="INFO"></logger>
+	<logger name="com.xianbei" level="INFO">
+        <appender-ref ref="TOURIST_API"/>
+	</logger>
+    <logger name="org.pentaho.di" level="INFO">
+        <appender-ref ref="TOURIST_API"/>
+    </logger>
+    <logger name="org.quartz" level="INFO">
+        <appender-ref ref="TOURIST_API"/>
+    </logger>
+
+</configuration>
+
+
+

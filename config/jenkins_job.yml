@@ -1,0 +1,10 @@
+jenkins_jobs:
+ jenkins_host: http://47.93.232.166:8083
+ jobs:
+  - git_branch: master
+    job_name: t1_build
+    job_token: 123456
+    job_param: ssh_server=t1.xianbei.cc&port=1818&ssh_user=root&ssh_pwd=Wangzikai123
+    job_repo: pokets
+    job_type: buildWithParameters
+

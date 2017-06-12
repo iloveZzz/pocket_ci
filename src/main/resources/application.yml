@@ -1,0 +1,14 @@
+spring:
+      datasource:
+        url: jdbc:mysql://rdsk0jz68371s9zd6t4z.mysql.rds.aliyuncs.com:3306/es
+        username: xianbei_t1
+        password: xianbei_t1_dev
+        driver: com.mysql.jdbc.Driver
+mybatis:
+    type-aliases-package: com.xianbei.pocket.model
+    type-handlers-package: com.xianbei.pocket.dao.typehandler
+    configuration:
+        map-underscore-to-camel-case: true
+        default-fetch-size: 100
+        default-statement-timeout: 30
+
