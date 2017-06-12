@@ -26,7 +26,6 @@ public class BitbucketController {
     @RequestMapping("bitbucket_hook")
     @ResponseBody
     public String bitbucket_hook(String rq, BindingResult bindingResult) {
-
         Map<String, Object> map = new HashMap<String, Object>();
 
         if (bindingResult.hasErrors()) {
