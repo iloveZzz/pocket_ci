@@ -5,6 +5,9 @@ jenkins_jobs:
     job_name: t1_build
     job_token: 123456
     job_param: ssh_server=t1.xianbei.cc&port=1818&ssh_user=root&ssh_pwd=Wangzikai123
-    job_repo: pokets
     job_type: buildWithParameters
+  - git_branch: master
+    job_name: pocket_task
+    job_token: 123456
+    job_type: build
 
