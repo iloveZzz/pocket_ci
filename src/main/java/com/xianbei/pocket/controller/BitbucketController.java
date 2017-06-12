@@ -22,6 +22,7 @@ public class BitbucketController {
     @RequestMapping("pocket_hook")
     @ResponseBody
     public String pocket_hook(String rq, BindingResult bindingResult) {
+
         Map<String, Object> map = new HashMap<String, Object>();
 
         if (bindingResult.hasErrors()) {
