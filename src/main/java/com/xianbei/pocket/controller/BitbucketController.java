@@ -1,6 +1,8 @@
 package com.xianbei.pocket.controller;
 
+import com.xianbei.pocket.pojo.JenkinJob;
 import com.xianbei.pocket.service.JenkinsService;
+import com.xianbei.pocket.utils.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +24,6 @@ public class BitbucketController {
     private static final Logger LOG = LoggerFactory.getLogger(BitbucketController.class);
     @Autowired
     private JenkinsService jenkinsService;
-
     @RequestMapping("bitbucket_hook")
     @ResponseBody
     public String bitbucket_hook(@RequestBody String rq, BindingResult bindingResult) {
@@ -52,4 +54,5 @@ public class BitbucketController {
         jenkinsService.triggerBuildByGithub(rq);
         return map;
     }
+
 }

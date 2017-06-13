@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import com.xianbei.pocket.pojo.CommitInfo;
 import com.xianbei.pocket.service.JenkinsService;
-import com.xianbei.pocket.pojo.JenkinJob;
+import com.xianbei.pocket.utils.Config;
 import com.xianbei.pocket.utils.HttpUtil;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -33,9 +33,6 @@ public class JenkinsServiceImpl implements JenkinsService {
     private static final String BITBUCKET="bitbucket";
     private static final String GITLAB="gitlab";
 
-    @Autowired
-    private JenkinJob jenkinJob;
-
     @Override
     public void triggerBuildByBitbucket(String hook_body) {
         try {
@@ -54,7 +51,7 @@ public class JenkinsServiceImpl implements JenkinsService {
             String compare_html = JsonPath.read(hook_body, "$.push.changes..new.target.links.html.href").toString();
             LOG.info("bitbucket比较代码url【" + compare_html + "】");
             CommitInfo commitInfo = new CommitInfo(actor,repo_name,repo_full_name,path_branch,message,compare_html);
-            for (Map<String, String> job_m : jenkinJob.getJobs()) {
+            for (Map<String, String> job_m : Config.jenkinJob.getJobs()) {
                 if (path_branch.contains(job_m.get("git_branch"))&&BITBUCKET.equals(job_m.get("git_type"))) {
                     job_map = job_m;
                 }
@@ -87,7 +84,7 @@ public class JenkinsServiceImpl implements JenkinsService {
 
             CommitInfo commitInfo = new CommitInfo(actor,repo_name,repo_full_name,path_branch,message,compare_html);
 
-            List<Map<String, String>> jobs = jenkinJob.getJobs();
+            List<Map<String, String>> jobs = Config.jenkinJob.getJobs();
             ObjectMapper om = new ObjectMapper();
             LOG.info("jenkins_job.yml【" + om.writeValueAsString(jobs) + "】");
 
@@ -106,7 +103,7 @@ public class JenkinsServiceImpl implements JenkinsService {
 
     public void sendUrl(Map job_map) {
         if (job_map != null) {
-            String jenkinsUrl = jenkinJob.getJenkins_host()
+            String jenkinsUrl = Config.jenkinJob.getJenkins_host()
                     + "/job/" + job_map.get("job_name")
                     + "/" + job_map.get("job_type")
                     + "?token=" + job_map.get("job_token")
