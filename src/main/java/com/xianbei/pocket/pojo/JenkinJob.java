@@ -13,7 +13,6 @@ import java.util.Map;
  */
 @Component
 @ConfigurationProperties(prefix = "jenkins_jobs")
-@PropertySource("file:config/jenkins_job.yml")
 public class JenkinJob {
     private List<Map<String, String>> jobs = new ArrayList<>();
     private String jenkins_host;
