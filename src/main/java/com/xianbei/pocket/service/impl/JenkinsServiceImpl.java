@@ -77,6 +77,7 @@ public class JenkinsServiceImpl implements JenkinsService {
                     + "/" + job_map.get("job_type")
                     + "?token=" + job_map.get("job_token")
                     + "&" + job_map.get("job_param");
+            LOG.info("------------------start-----------------");
             LOG.info("执行ci的url【" + jenkinsUrl + "】");
             LOG.info("bitbucket仓库名称【" + commitInfo.getRepo_name() + "】");
             LOG.info("bitbucket仓库全名称【" + commitInfo.getRepo_full_name() + "】");
@@ -90,6 +91,7 @@ public class JenkinsServiceImpl implements JenkinsService {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            LOG.info("--------------------end-------------------");
             System.out.println(rep_body);
         }
     }
