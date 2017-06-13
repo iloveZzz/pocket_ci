@@ -1,9 +1,6 @@
 package com.xianbei.pocket.pojo;
 
 import com.xianbei.pocket.utils.ApplicationProperties;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
