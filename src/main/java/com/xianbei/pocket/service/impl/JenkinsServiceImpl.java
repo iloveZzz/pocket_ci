@@ -29,12 +29,19 @@ public class JenkinsServiceImpl implements JenkinsService {
     public void triggerBuildByBitbucket(String hook_body) {
         try {
             Map job_map = null;
+            LOG.info("------------------start-----------------");
             String actor = JsonPath.read(hook_body, "$.repository.name");
+            LOG.info("bitbucket作者【" + actor + "】");
             String repo_name = JsonPath.read(hook_body, "$.repository.name");
+            LOG.info("bitbucket仓库名称【" + repo_name + "】");
             String repo_full_name = JsonPath.read(hook_body, "$.repository.full_name");
+            LOG.info("bitbucket仓库全名称【" + repo_full_name + "】");
             String path_branch = JsonPath.read(hook_body, "$.push.changes..new.name").toString();
+            LOG.info("bitbucket分支【" + path_branch + "】");
             String message = JsonPath.read(hook_body, "$.push.changes..new.target.message").toString();
+            LOG.info("bitbucket提交消息【" + message + "】");
             String compare_html = JsonPath.read(hook_body, "$.push.changes..new.target.links.html.href").toString();
+            LOG.info("bitbucket比较代码url【" + compare_html + "】");
             CommitInfo commitInfo = new CommitInfo(actor,repo_name,repo_full_name,path_branch,message,compare_html);
             for (Map<String, String> job_m : jenkinJob.getJobs()) {
                 if (path_branch.contains(job_m.get("git_branch"))&&BITBUCKET.equals(job_m.get("git_type"))) {
@@ -42,6 +49,7 @@ public class JenkinsServiceImpl implements JenkinsService {
                 }
             }
             this.sendUrl(job_map,commitInfo);
+            LOG.info("--------------------end-------------------");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -52,12 +60,19 @@ public class JenkinsServiceImpl implements JenkinsService {
 
         try {
             Map job_map = null;
+            LOG.info("------------------start-----------------");
             String actor = JsonPath.read(hook_body, "$.pusher.name");
+            LOG.info("bitbucket作者【" + actor + "】");
             String repo_name = JsonPath.read(hook_body, "$.repository.name");
+            LOG.info("bitbucket仓库名称【" + repo_name + "】");
             String repo_full_name = JsonPath.read(hook_body, "$.repository.full_name");
+            LOG.info("bitbucket仓库全名称【" + repo_full_name + "】");
             String path_branch = JsonPath.read(hook_body, "$.repository.default_branch").toString();
+            LOG.info("bitbucket分支【" + path_branch + "】");
             String message = JsonPath.read(hook_body, "$.head_commit.message").toString();
+            LOG.info("bitbucket提交消息【" + message + "】");
             String compare_html = JsonPath.read(hook_body, "$.compare").toString();
+            LOG.info("bitbucket比较代码url【" + compare_html + "】");
             CommitInfo commitInfo = new CommitInfo(actor,repo_name,repo_full_name,path_branch,message,compare_html);
             for (Map<String, String> job_m : jenkinJob.getJobs()) {
                 if (path_branch.contains(job_m.get("git_branch"))&&GITHUB.equals(job_m.get("git_type"))) {
@@ -65,6 +80,7 @@ public class JenkinsServiceImpl implements JenkinsService {
                 }
             }
             this.sendUrl(job_map,commitInfo);
+            LOG.info("--------------------end-------------------");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -77,21 +93,14 @@ public class JenkinsServiceImpl implements JenkinsService {
                     + "/" + job_map.get("job_type")
                     + "?token=" + job_map.get("job_token")
                     + "&" + job_map.get("job_param");
-            LOG.info("------------------start-----------------");
             LOG.info("执行ci的url【" + jenkinsUrl + "】");
-            LOG.info("bitbucket仓库名称【" + commitInfo.getRepo_name() + "】");
-            LOG.info("bitbucket仓库全名称【" + commitInfo.getRepo_full_name() + "】");
-            LOG.info("bitbucket作者【" + commitInfo.getActor() + "】");
-            LOG.info("bitbucket分支【" + commitInfo.getPath_branch() + "】");
-            LOG.info("bitbucket提交消息【" + commitInfo.getMessage() + "】");
-            LOG.info("bitbucket比较代码url【" + commitInfo.getCompare_html() + "】");
             String rep_body = null;
             try {
                 rep_body = HttpUtil.getResponseBody(HttpUtil.createConnection(jenkinsUrl));
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            LOG.info("--------------------end-------------------");
+
             System.out.println(rep_body);
         }
     }

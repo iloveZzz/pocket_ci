@@ -36,15 +36,20 @@ public class BitbucketController {
     }
     @RequestMapping("github_hook")
     @ResponseBody
-    public String github_hook(@RequestBody String rq, BindingResult bindingResult) {
+    public Map github_hook(@RequestBody String rq, BindingResult bindingResult) {
         LOG.info("接收到来自github上的请求");
+        LOG.info("请求报文【"+rq+"】");
         Map<String, Object> map = new HashMap<String, Object>();
 
         if (bindingResult.hasErrors()) {
             map.put("errorCode", "000001");
             map.put("errorMsg", bindingResult.getFieldError().getDefaultMessage());
+        }else{
+            map.put("errorCode", "000000");
+            map.put("errorMsg","访问成功！");
         }
+        LOG.info("触发triggerBuildByGithub！！！");
         jenkinsService.triggerBuildByGithub(rq);
-        return "success";
+        return map;
     }
 }
