@@ -16,16 +16,13 @@ import java.util.Map;
  */
 @Controller
 public class BitbucketController {
-    private static final String GITHUB="";
-    private static final String BITBUCKET="";
-    private static final String GITLAB="";
 
     @Autowired
     private JenkinsService jenkinsService;
 
     @RequestMapping("bitbucket_hook")
     @ResponseBody
-    public String bitbucket_hook(String rq, BindingResult bindingResult) {
+    public String bitbucket_hook(@RequestBody String rq, BindingResult bindingResult) {
         Map<String, Object> map = new HashMap<String, Object>();
 
         if (bindingResult.hasErrors()) {
@@ -37,7 +34,7 @@ public class BitbucketController {
     }
     @RequestMapping("github_hook")
     @ResponseBody
-    public String github_hook(String rq, BindingResult bindingResult) {
+    public String github_hook(@RequestBody String rq, BindingResult bindingResult) {
 
         Map<String, Object> map = new HashMap<String, Object>();
 

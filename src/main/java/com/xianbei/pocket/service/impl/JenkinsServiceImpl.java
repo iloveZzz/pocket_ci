@@ -19,6 +19,9 @@ import java.util.Map;
 @Service("jenkinsService")
 public class JenkinsServiceImpl implements JenkinsService {
     private static final Logger LOG = LoggerFactory.getLogger(JenkinsServiceImpl.class);
+    private static final String GITHUB="github";
+    private static final String BITBUCKET="bitbucket";
+    private static final String GITLAB="gitlab";
     @Autowired
     private JenkinJob jenkinJob;
 
@@ -34,7 +37,7 @@ public class JenkinsServiceImpl implements JenkinsService {
             String compare_html = JsonPath.read(hook_body, "$.push.changes..new.target.links.html.href").toString();
             CommitInfo commitInfo = new CommitInfo(actor,repo_name,repo_full_name,path_branch,message,compare_html);
             for (Map<String, String> job_m : jenkinJob.getJobs()) {
-                if (path_branch.contains(job_m.get("git_branch"))) {
+                if (path_branch.contains(job_m.get("git_branch"))&&BITBUCKET.equals(job_m.get("git_type"))) {
                     job_map = job_m;
                 }
             }
@@ -57,7 +60,7 @@ public class JenkinsServiceImpl implements JenkinsService {
             String compare_html = JsonPath.read(hook_body, "$.compare").toString();
             CommitInfo commitInfo = new CommitInfo(actor,repo_name,repo_full_name,path_branch,message,compare_html);
             for (Map<String, String> job_m : jenkinJob.getJobs()) {
-                if (path_branch.contains(job_m.get("git_branch"))) {
+                if (path_branch.contains(job_m.get("git_branch"))&&GITHUB.equals(job_m.get("git_type"))) {
                     job_map = job_m;
                 }
             }
