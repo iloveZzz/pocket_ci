@@ -28,7 +28,7 @@ public class BitbucketController {
         Map<String, Object> map = new HashMap<String, Object>();
 
         if (bindingResult.hasErrors()) {
-            map.put("errorCode", "000001");
+            map.put("code", "000001");
             map.put("errorMsg", bindingResult.getFieldError().getDefaultMessage());
         }
         jenkinsService.triggerBuildByBitbucket(rq);
@@ -42,10 +42,10 @@ public class BitbucketController {
         Map<String, Object> map = new HashMap<String, Object>();
 
         if (bindingResult.hasErrors()) {
-            map.put("errorCode", "000001");
+            map.put("code", "000001");
             map.put("errorMsg", bindingResult.getFieldError().getDefaultMessage());
         }else{
-            map.put("errorCode", "000000");
+            map.put("code", "000000");
             map.put("errorMsg","访问成功！");
         }
         LOG.info("触发triggerBuildByGithub！！！");

@@ -1,5 +1,8 @@
 package com.xianbei.pocket;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,5 +14,11 @@ public class PocketCusTest {
         Map a =  new HashMap();
 
         System.out.println(a.get("aaa"));
+        ObjectMapper om = new ObjectMapper();
+        try {
+            om.writeValueAsString("{}");
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 }
