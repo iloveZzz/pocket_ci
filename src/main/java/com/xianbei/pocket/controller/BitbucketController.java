@@ -21,9 +21,15 @@ import java.util.Map;
  */
 @Controller
 public class BitbucketController {
+
     private static final Logger LOG = LoggerFactory.getLogger(BitbucketController.class);
+
+    @Autowired
+    private JenkinJob jenkinJob;
+
     @Autowired
     private JenkinsService jenkinsService;
+
     @RequestMapping("bitbucket_hook")
     @ResponseBody
     public String bitbucket_hook(@RequestBody String rq, BindingResult bindingResult) {
@@ -33,7 +39,7 @@ public class BitbucketController {
             map.put("code", "000001");
             map.put("errorMsg", bindingResult.getFieldError().getDefaultMessage());
         }
-        jenkinsService.triggerBuildByBitbucket(rq);
+        jenkinsService.triggerBuildByBitbucket(rq,jenkinJob);
         return "success";
     }
     @RequestMapping("github_hook")
@@ -51,7 +57,7 @@ public class BitbucketController {
             map.put("errorMsg","访问成功！");
         }
         LOG.info("触发triggerBuildByGithub！！！");
-        jenkinsService.triggerBuildByGithub(rq);
+        jenkinsService.triggerBuildByGithub(rq,jenkinJob);
         return map;
     }
 

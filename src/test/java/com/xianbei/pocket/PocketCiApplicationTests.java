@@ -26,15 +26,12 @@ public class PocketCiApplicationTests {
 	private BitbucketController bitbucketController;
 	@Autowired
 	private JenkinJob jenkinJob;
-
-	@PostConstruct
-	public void init(){
-		Config.jenkinJob=jenkinJob;
-	}
+	@Autowired
+	private JenkinsService jenkinsService;
 	@Test
 	public void contextLoads() throws JsonProcessingException {
 		ObjectMapper om = new ObjectMapper();
-		System.out.println("jenkins_job.yml【" + om.writeValueAsString(Config.jenkinJob.getJobs()) + "】");
+		System.out.println("jenkins_job.yml【" + om.writeValueAsString(jenkinJob.getJobs()) + "】");
 	}
 
 }
