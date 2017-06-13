@@ -4,14 +4,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import com.xianbei.pocket.pojo.CommitInfo;
-import com.xianbei.pocket.pojo.JenkinJob;
 import com.xianbei.pocket.service.JenkinsService;
+import com.xianbei.pocket.utils.ApplicationContextUtil;
 import com.xianbei.pocket.utils.Config;
 import com.xianbei.pocket.utils.HttpUtil;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -22,7 +24,7 @@ import java.util.Map;
 /**
  * Created by zhudaoming on 2017/6/9.
  */
-@Service("jenkinsService")
+@Component("jenkinsService")
 public class JenkinsServiceImpl implements JenkinsService {
 
     private static final Logger LOG = LoggerFactory.getLogger(JenkinsServiceImpl.class);
@@ -34,7 +36,7 @@ public class JenkinsServiceImpl implements JenkinsService {
     private static final String BITBUCKET="bitbucket";
     private static final String GITLAB="gitlab";
 
-    public void triggerBuildByBitbucket(String hook_body,JenkinJob jenkinJob) {
+    public void triggerBuildByBitbucket(String hook_body) {
         try {
             Map job_map = null;
             LOG.info("------------------start-----------------");
@@ -51,12 +53,12 @@ public class JenkinsServiceImpl implements JenkinsService {
             String compare_html = JsonPath.read(hook_body, "$.push.changes..new.target.links.html.href").toString();
             LOG.info("bitbucket比较代码url【" + compare_html + "】");
             CommitInfo commitInfo = new CommitInfo(actor,repo_name,repo_full_name,path_branch,message,compare_html);
-            for (Map<String, String> job_m : jenkinJob.getJobs()) {
+            for (Map<String, String> job_m : Config.jenkinJob.getJobs()) {
                 if (path_branch.contains(job_m.get("git_branch"))&&BITBUCKET.equals(job_m.get("git_type"))) {
                     job_map = job_m;
                 }
             }
-            this.sendUrl(job_map,jenkinJob);
+            this.sendUrl(job_map);
             LOG.info("--------------------end-------------------");
         } catch (Exception e) {
             e.printStackTrace();
@@ -64,8 +66,7 @@ public class JenkinsServiceImpl implements JenkinsService {
     }
 
     @Override
-    public void triggerBuildByGithub(String hook_body,JenkinJob jenkinJob) {
-
+    public void triggerBuildByGithub(String hook_body) {
         try {
             Map job_map = null;
             LOG.info("------------------start-----------------");
@@ -84,7 +85,7 @@ public class JenkinsServiceImpl implements JenkinsService {
 
             CommitInfo commitInfo = new CommitInfo(actor,repo_name,repo_full_name,path_branch,message,compare_html);
 
-            List<Map<String, String>> jobs = jenkinJob.getJobs();
+            List<Map<String, String>> jobs = Config.jenkinJob.getJobs();
             ObjectMapper om = new ObjectMapper();
             LOG.info("jenkins_job.yml【" + om.writeValueAsString(jobs) + "】");
 
@@ -94,16 +95,16 @@ public class JenkinsServiceImpl implements JenkinsService {
                 }
             }
             LOG.info("job_map【" + om.writeValueAsString(job_map) + "】");
-            this.sendUrl(job_map,jenkinJob);
+            this.sendUrl(job_map);
             LOG.info("--------------------end-------------------");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void sendUrl(Map job_map,JenkinJob jenkinJob) {
+    public void sendUrl(Map job_map) {
         if (job_map != null) {
-            String jenkinsUrl = jenkinJob.getJenkins_host()
+            String jenkinsUrl = Config.jenkinJob.getJenkins_host()
                     + "/job/" + job_map.get("job_name")
                     + "/" + job_map.get("job_type")
                     + "?token=" + job_map.get("job_token")
@@ -118,5 +119,9 @@ public class JenkinsServiceImpl implements JenkinsService {
 
             LOG.info("httpClient返回的内容【"+rep_body+"】");
         }
+    }
+    @PostConstruct
+    public void init(){
+        System.out.println(222);
     }
 }

@@ -2,10 +2,12 @@ package com.xianbei.pocket.controller;
 
 import com.xianbei.pocket.pojo.JenkinJob;
 import com.xianbei.pocket.service.JenkinsService;
+import com.xianbei.pocket.utils.ApplicationPropertiesBindingPostProcessor;
 import com.xianbei.pocket.utils.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,9 +27,6 @@ public class BitbucketController {
     private static final Logger LOG = LoggerFactory.getLogger(BitbucketController.class);
 
     @Autowired
-    private JenkinJob jenkinJob;
-
-    @Autowired
     private JenkinsService jenkinsService;
 
     @RequestMapping("bitbucket_hook")
@@ -39,7 +38,7 @@ public class BitbucketController {
             map.put("code", "000001");
             map.put("errorMsg", bindingResult.getFieldError().getDefaultMessage());
         }
-        jenkinsService.triggerBuildByBitbucket(rq,jenkinJob);
+        jenkinsService.triggerBuildByBitbucket(rq);
         return "success";
     }
     @RequestMapping("github_hook")
@@ -57,8 +56,7 @@ public class BitbucketController {
             map.put("errorMsg","访问成功！");
         }
         LOG.info("触发triggerBuildByGithub！！！");
-        jenkinsService.triggerBuildByGithub(rq,jenkinJob);
+        jenkinsService.triggerBuildByGithub(rq);
         return map;
     }
-
 }

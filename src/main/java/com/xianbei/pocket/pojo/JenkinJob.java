@@ -3,6 +3,7 @@ package com.xianbei.pocket.pojo;
 import com.xianbei.pocket.utils.ApplicationProperties;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +11,6 @@ import java.util.Map;
 /**
  * Created by zhudaoming on 2017/6/9.
  */
-@Component
 @ApplicationProperties(prefix = "jenkins_jobs",locations = "file:config/jenkins_job.yml")
 public class JenkinJob {
     private List<Map<String, String>> jobs = new ArrayList<>();

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xianbei.pocket.controller.BitbucketController;
 import com.xianbei.pocket.pojo.JenkinJob;
 import com.xianbei.pocket.service.JenkinsService;
+import com.xianbei.pocket.utils.ApplicationPropertiesBindingPostProcessor;
 import com.xianbei.pocket.utils.Config;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,8 +31,9 @@ public class PocketCiApplicationTests {
 	private JenkinsService jenkinsService;
 	@Test
 	public void contextLoads() throws JsonProcessingException {
+		JenkinJob cc = (JenkinJob)ApplicationPropertiesBindingPostProcessor.bindPropertiesToTarget(JenkinJob.class);
 		ObjectMapper om = new ObjectMapper();
-		System.out.println("jenkins_job.yml【" + om.writeValueAsString(jenkinJob.getJobs()) + "】");
+		System.out.println("jenkins_job.yml【" + om.writeValueAsString(cc) + "】");
 	}
 
 }

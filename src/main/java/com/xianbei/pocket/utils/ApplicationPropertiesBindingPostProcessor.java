@@ -34,35 +34,34 @@ import java.util.Map;
  * See ConfigurationPropertiesBindingPostProcessor for the deprecated implementation.
  *
  */
-public class ApplicationPropertiesBindingPostProcessor implements BeanFactoryAware, ApplicationContextAware, ResourceLoaderAware, EnvironmentAware {
+public class ApplicationPropertiesBindingPostProcessor implements ResourceLoaderAware, EnvironmentAware {
 
-    private BeanFactory beanFactory;
 
-    private ApplicationContext applicationContext;
+    private static ResourceLoader resourceLoader = new DefaultResourceLoader();
 
-    private ResourceLoader resourceLoader = new DefaultResourceLoader();
+    private static Environment environment = new StandardEnvironment();
 
-    private Environment environment = new StandardEnvironment();
 
-    @PostConstruct
-    public void init() throws IOException, IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException, BindException {
-        Map<String, Object> beansWithAnnotation = applicationContext.getBeansWithAnnotation(ApplicationProperties.class);
 
-        for (String beanName : beansWithAnnotation.keySet()) {
-            Class<?> clazz = beansWithAnnotation.get(beanName).getClass();
-            Object newInstance = bindPropertiesToTarget(clazz);
-
-            ConfigurableListableBeanFactory configurableListableBeanFactory = (ConfigurableListableBeanFactory) beanFactory;
-            configurableListableBeanFactory.registerResolvableDependency(clazz, newInstance);
-        }
-
-    }
-
-    private Object bindPropertiesToTarget(Class<?> clazz) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, BindException {
+    public static Object bindPropertiesToTarget(Class<?> clazz)  {
         ApplicationProperties applicationProperties = clazz.getAnnotation(ApplicationProperties.class);
 
-        Constructor<?> constructor = clazz.getConstructor();
-        Object newInstance = constructor.newInstance();
+        Constructor<?> constructor = null;
+        try {
+            constructor = clazz.getConstructor();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        Object newInstance = null;
+        try {
+            newInstance = constructor.newInstance();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
 
         PropertiesConfigurationFactory<Object> factory = new PropertiesConfigurationFactory<>(newInstance);
         factory.setPropertySources(loadPropertySources(applicationProperties.locations()));
@@ -79,12 +78,12 @@ public class ApplicationPropertiesBindingPostProcessor implements BeanFactoryAwa
         return newInstance;
     }
 
-    private PropertySources loadPropertySources(String[] locations) {
+    private static PropertySources loadPropertySources(String[] locations) {
         try {
             PropertySourcesLoader loader = new PropertySourcesLoader();
             for (String location : locations) {
-                Resource resource = this.resourceLoader.getResource(this.environment.resolvePlaceholders(location));
-                String[] profiles = this.environment.getActiveProfiles();
+                Resource resource = resourceLoader.getResource(environment.resolvePlaceholders(location));
+                String[] profiles = environment.getActiveProfiles();
                 for (int i = profiles.length; i-- > 0;) {
                     String profile = profiles[i];
                     loader.load(resource, profile);
@@ -97,15 +96,6 @@ public class ApplicationPropertiesBindingPostProcessor implements BeanFactoryAwa
         }
     }
 
-    @Override
-    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-        this.beanFactory = beanFactory;
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
 
     @Override
     public void setResourceLoader(ResourceLoader resourceLoader) {
