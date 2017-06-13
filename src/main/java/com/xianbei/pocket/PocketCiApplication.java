@@ -1,5 +1,6 @@
 package com.xianbei.pocket;
 
+import com.xianbei.pocket.utils.ApplicationPropertiesBindingPostProcessor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
@@ -23,5 +24,9 @@ public class PocketCiApplication {
 		factory.setSessionTimeout(10, TimeUnit.MINUTES);
 		factory.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/notfound.html"));
 		return factory;
+	}
+	@Bean
+	public ApplicationPropertiesBindingPostProcessor applicationPropertiesBindingPostProcessor() {
+		return new ApplicationPropertiesBindingPostProcessor();
 	}
 }

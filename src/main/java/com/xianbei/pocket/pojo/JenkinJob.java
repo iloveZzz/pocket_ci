@@ -1,5 +1,7 @@
 package com.xianbei.pocket.pojo;
 
+import com.xianbei.pocket.utils.ApplicationProperties;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
@@ -12,7 +14,7 @@ import java.util.Map;
  * Created by zhudaoming on 2017/6/9.
  */
 @Component
-@ConfigurationProperties(prefix = "jenkins_jobs")
+@ApplicationProperties(prefix = "jenkins_jobs",locations = "file:config/jenkins_job.yml")
 public class JenkinJob {
     private List<Map<String, String>> jobs = new ArrayList<>();
     private String jenkins_host;
